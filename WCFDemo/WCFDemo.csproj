@@ -55,6 +55,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
@@ -66,8 +67,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\AEntity.cs" />
+    <Compile Include="Entities\ChatContentEntity.cs" />
     <Compile Include="Entities\ExceptionInfo.cs" />
     <Compile Include="GlobalCache.cs" />
+    <Compile Include="IPC\IIPC.cs" />
+    <Compile Include="IPC\IPCMessager.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="RealTimeTaskScheduler_demo.cs" />
     <Compile Include="CommonHelper.cs" />
