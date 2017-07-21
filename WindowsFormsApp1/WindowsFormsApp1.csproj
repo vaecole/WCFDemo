@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -77,6 +78,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WCFDemo\WCFDemo.csproj">
+      <Project>{2f5e5069-9719-45ea-8f04-b2e262190b76}</Project>
+      <Name>WCFDemo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WcfServiceLibrary1\MyServiceContract.csproj">
+      <Project>{dc24c654-09a5-4318-916f-c8d80cfd9a53}</Project>
+      <Name>MyServiceContract</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

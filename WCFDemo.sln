@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{F8D824A6-335F-403D-811F-38939302BFCA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServiceContract", "WcfServiceLibrary1\MyServiceContract.csproj", "{DC24C654-09A5-4318-916F-C8D80CFD9A53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MySources", "MySources\MySources.csproj", "{544F35E0-1D9D-462C-960B-743106964BF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F8D824A6-335F-403D-811F-38939302BFCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8D824A6-335F-403D-811F-38939302BFCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8D824A6-335F-403D-811F-38939302BFCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC24C654-09A5-4318-916F-C8D80CFD9A53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC24C654-09A5-4318-916F-C8D80CFD9A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC24C654-09A5-4318-916F-C8D80CFD9A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC24C654-09A5-4318-916F-C8D80CFD9A53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{544F35E0-1D9D-462C-960B-743106964BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{544F35E0-1D9D-462C-960B-743106964BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{544F35E0-1D9D-462C-960B-743106964BF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{544F35E0-1D9D-462C-960B-743106964BF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

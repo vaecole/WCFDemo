@@ -71,15 +71,17 @@
     <Compile Include="Entities\ChatContentEntity.cs" />
     <Compile Include="Entities\ExceptionInfo.cs" />
     <Compile Include="GlobalCache.cs" />
-    <Compile Include="IPC\IIPC.cs" />
-    <Compile Include="IPC\IPCMessager.cs" />
     <Compile Include="LogHelper.cs" />
-    <Compile Include="RealTimeTaskScheduler_demo.cs" />
+    <Compile Include="NetworkUtility\HttpHelper.cs" />
+    <Compile Include="NetworkUtility\HttpResult.cs" />
+    <Compile Include="NetworkUtility\SocketHelper.cs" />
+    <Compile Include="MyTaskScheduler.cs" />
     <Compile Include="CommonHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQLHelper.cs" />
-    <Compile Include="StringHelper.cs" />
+    <Compile Include="ServiceUtility\ServiceHelper.cs" />
+    <Compile Include="SQLUtility\SQLHelper.cs" />
+    <Compile Include="TextUtility\StringHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
