@@ -7,8 +7,71 @@ using System.Threading.Tasks;
 
 namespace WCFDemo
 {
-    class StringHelper
+    public static class StringHelper
     {
+
+        /// <summary>
+        /// 超过一定字符串长度后裁切并加特定符号(默认省略号: "...")
+        /// </summary>
+        /// <param name="str">要裁切的字符串</param>
+        /// <param name="suspensionLength">裁切长度</param>
+        /// <param name="suspensionSymbol">代替多余字符的符号</param>
+        /// <returns></returns>
+        public static string Suspension(this string str, int suspensionLength, string suspensionSymbol = "...")
+        {
+#if INTER_VERSION
+            suspensionLength*=2;
+#endif
+            return (str ?? string.Empty).Length > suspensionLength ? str.Substring(0, suspensionLength) + suspensionSymbol : str;
+        }
+
+        /// <summary>
+        /// 将字符串中的换行和多余的空格替换为一个空格
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string TrimInner(this string str)
+        {
+            if (str == null)
+                return null;
+            str = str.Replace("\r\n", " ");
+            string[] charArray = str.Split(' ');
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in charArray)
+            {
+                sb.Append(item + " ");
+            }
+            return sb.ToString();
+        }
+
+        public static string ToMosaicString(this string str, int mosaicPercentage = 40, char mosaicSymbol = '*')
+        {
+            if (mosaicPercentage <= 0)
+            {
+                return str;
+            }
+            if (mosaicPercentage >= 100)
+            {
+                mosaicPercentage = 50;
+            }
+
+            int startMax = 100 - mosaicPercentage;
+            int mosaicStart = (startMax / 2) * str.Length / 100;
+            string resStr = str.Substring(0, mosaicStart);
+
+            int mosaicLength = mosaicPercentage * str.Length / 100;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < mosaicLength; i++)
+            {
+                sb.Append(mosaicSymbol);
+            }
+
+            resStr += sb.ToString();
+
+            resStr += str.Substring(mosaicStart + mosaicLength);
+            return resStr;
+        }
+
         public string Replace()
         {
             string res = null;
