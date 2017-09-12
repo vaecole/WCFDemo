@@ -62,16 +62,14 @@ namespace WCFDemo
             {
                 today = DateTime.Today;
                 lock (writerLock)
-                { 
+                {
                     jsonLogWriter.Close();
                     jsonLogWriter = File.AppendText(_logPath);
                 }
             }
-            lock (writerLock)
-            {
-                jsonLogWriter.WriteLine(content);
-                jsonLogWriter.Flush();
-            }
+            jsonLogWriter.WriteLine(content);
+            jsonLogWriter.Flush();
+
         }
     }
 }
