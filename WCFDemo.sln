@@ -5,17 +5,9 @@ VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCFDemo", "WCFDemo\WCFDemo.csproj", "{2F5E5069-9719-45EA-8F04-B2E262190B76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{DCE4D4C4-EBC9-45D8-A95A-F548E484F5BD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{F8D824A6-335F-403D-811F-38939302BFCA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyServiceContract", "WcfServiceLibrary1\MyServiceContract.csproj", "{DC24C654-09A5-4318-916F-C8D80CFD9A53}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySources", "MySources\MySources.csproj", "{544F35E0-1D9D-462C-960B-743106964BF6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ever2Datable", "Ever2Datable\Ever2Datable.csproj", "{9764DA04-B99C-4357-8F5E-464388E80206}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoProxy", "AutoProxy\AutoProxy.csproj", "{7D891E2A-8EA1-4461-84A6-2257CEB77A4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,18 +19,6 @@ Global
 		{2F5E5069-9719-45EA-8F04-B2E262190B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F5E5069-9719-45EA-8F04-B2E262190B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F5E5069-9719-45EA-8F04-B2E262190B76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DCE4D4C4-EBC9-45D8-A95A-F548E484F5BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCE4D4C4-EBC9-45D8-A95A-F548E484F5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCE4D4C4-EBC9-45D8-A95A-F548E484F5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCE4D4C4-EBC9-45D8-A95A-F548E484F5BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8D824A6-335F-403D-811F-38939302BFCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8D824A6-335F-403D-811F-38939302BFCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8D824A6-335F-403D-811F-38939302BFCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8D824A6-335F-403D-811F-38939302BFCA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC24C654-09A5-4318-916F-C8D80CFD9A53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC24C654-09A5-4318-916F-C8D80CFD9A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC24C654-09A5-4318-916F-C8D80CFD9A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC24C654-09A5-4318-916F-C8D80CFD9A53}.Release|Any CPU.Build.0 = Release|Any CPU
 		{544F35E0-1D9D-462C-960B-743106964BF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{544F35E0-1D9D-462C-960B-743106964BF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{544F35E0-1D9D-462C-960B-743106964BF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,10 +27,6 @@ Global
 		{9764DA04-B99C-4357-8F5E-464388E80206}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9764DA04-B99C-4357-8F5E-464388E80206}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9764DA04-B99C-4357-8F5E-464388E80206}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D891E2A-8EA1-4461-84A6-2257CEB77A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D891E2A-8EA1-4461-84A6-2257CEB77A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D891E2A-8EA1-4461-84A6-2257CEB77A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D891E2A-8EA1-4461-84A6-2257CEB77A4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

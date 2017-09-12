@@ -72,7 +72,7 @@ namespace WCFDemo
             return resStr;
         }
 
-        public string Replace()
+        public static string Replace()
         {
             string res = null;
             string t1 = File.OpenText(tmpltPath1).ReadToEnd();
@@ -99,9 +99,9 @@ namespace WCFDemo
             return res;
         }
 
-        public string tmpltPath1 = @"C:\Users\marko\Documents\Visual Studio 2017\Projects\WCFDemo\WCFDemo\bin\Debug\1.txt";
-        public string tmpltPath2 = @"C:\Users\marko\Documents\Visual Studio 2017\Projects\WCFDemo\WCFDemo\bin\Debug\2.txt";
-        public string str = @"1:软件介绍
+        public static string tmpltPath1 = @"C:\Users\marko\Documents\Visual Studio 2017\Projects\WCFDemo\WCFDemo\bin\Debug\1.txt";
+        public static string tmpltPath2 = @"C:\Users\marko\Documents\Visual Studio 2017\Projects\WCFDemo\WCFDemo\bin\Debug\2.txt";
+        public static string str = @"1:软件介绍
 八爪鱼介绍
 版本选择攻略
 2:新手入门

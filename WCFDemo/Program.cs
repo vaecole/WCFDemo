@@ -22,21 +22,10 @@ namespace WCFDemo
     {
         static void Main(params string[] paras)
         {
-            UserPrize exi = new UserPrize() { PrizeName = "八爪鱼月旗舰版优惠券58元", PrizeContent = "八爪鱼月旗舰版优惠券58元" ,LuckyTime = DateTime.Now};
-            var prize = new Prize() { PrizeName= "八爪鱼月旗舰版优惠券58元",PrizeDescription= "八爪鱼月旗舰版优惠券58元",PrizeID=1 };
-            var upl = new UserPrizeLog() {PrizeID = 1,UserName="username",PrizeName= "八爪鱼月旗舰版优惠券58元",LuckyTime = DateTime.Now.ToString() };
-            Console.WriteLine(JsonConvert.SerializeObject(upl, Formatting.Indented));
-            Console.ReadKey();
-            string str = "zxcvasdf123";
-            int i = 0;
-            while (true && i < int.MaxValue)
-            {
-                Console.WriteLine(str += (str + i++));
-            }
-            var res = new StringHelper().Replace();
-            File.WriteAllText("./res.txt", res);
-            Console.WriteLine(res);
-
+            short hour = 0;
+            short.TryParse("20" ?? string.Empty, out hour);
+            var scheduleOnceTime = new DateTime(DateTime.Now.Ticks - DateTime.Now.Ticks % TimeSpan.TicksPerDay).AddHours(hour);
+            Console.WriteLine(scheduleOnceTime );
         }
     }
     [DataContract]
