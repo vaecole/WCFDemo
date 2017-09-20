@@ -54,10 +54,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAOs\Class1.cs" />
+    <Compile Include="DAOs\RequestLogRepository.cs" />
+    <Compile Include="DAOs\RQ_DataAPI.cs" />
     <Compile Include="Entities\ApiUseLog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Query.cs" />
+    <Compile Include="TextFileHelper\CsvHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

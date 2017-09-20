@@ -21,4 +21,11 @@ namespace MongoDBDemo.Entities
 
         public DateTime CreatedDate { get; set; }
     }
+
+    [CollectionName("RequestLog_DataAPI_")]
+    public class RequestLog_DataAPI : MongoEntity
+    {
+        public string UserId { get; set; }
+        public string Para { get; set; }
+    }
 }

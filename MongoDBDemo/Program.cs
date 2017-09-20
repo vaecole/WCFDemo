@@ -46,21 +46,8 @@ namespace MongoDBDemo
             }
 
             var dal = new RequestLogRepository("mongodb://10.105.193.68:27017");
-            var entities = dal.QueryLogFrom2(start, end);
-            var dt = Converter<RequestLog>.Convert2(entities);
-            StringBuilder sb = new StringBuilder();
-
-            IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().
-                                              Select(column => column.ColumnName);
-            sb.AppendLine(string.Join(",", columnNames));
-
-            foreach (DataRow row in dt.Rows)
-            {
-                IEnumerable<string> fields = row.ItemArray.Select(field => field.ToString());
-                sb.AppendLine(string.Join(",", fields));
-            }
-
-            File.WriteAllText(filePath, sb.ToString());
+            var entities = dal.QueryDataAPILogFrom2(start, end);
+            TextFileHelper.CsvHelper<RequestLog>.Entities2Csv(filePath, entities);
         }
     }
 
