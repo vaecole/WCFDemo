@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace MongoDBDemo.TextFileHelper
 {
-    public class CsvHelper<T>
+    public static class CsvHelper
     {
-        public static void Entities2Csv(string filePath, List<T> entities)
+        public static void Convert2Csv<T>(this IEnumerable<T> entities, string filePath)
         {
             var dt = Converter<T>.Convert2(entities);
             StringBuilder sb = new StringBuilder();
