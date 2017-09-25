@@ -1,4 +1,5 @@
-﻿using MongoDBDemo.Entities;
+﻿using System.Configuration;
+using MongoDBDemo.Entities;
 using MongoDBDemo.Query;
 using MongoDBDemo.TextFileHelper;
 using System;
@@ -10,9 +11,8 @@ namespace MongoDBDemo
     {
         static void Main(params string[] agrs)
         {
-            DateTime start = DateTime.Now.AddDays(-20);
+            DateTime start = DateTime.Now.AddDays(-4);
             DateTime end = DateTime.Now;
-            string filePath = nameof(ProxyUseLogEntity) + ".csv";
             if (agrs.Count() > 0)
             {
                 if (!DateTime.TryParse(agrs[0], out start))
@@ -32,13 +32,21 @@ namespace MongoDBDemo
                 {
                     Console.WriteLine(nameof(agrs) + 0 + " invalid");
                 }
+                else
+                {
+                    int days = 1;
+                    int.TryParse(agrs[1], out days);
+                    end = DateTime.Now.AddDays(0 - days);
+                }
             }
+
+            string filePath = nameof(ProxyUseLogEntity) + ".csv";
             if (agrs.Count() > 2)
             {
                 filePath = agrs[2];
             }
 
-            var dal = new ProxyUseLogEntityDAL("mongodb://10.105.193.68:27017","UseLog");
+            var dal = new ProxyUseLogEntityDAL(ConfigurationManager.AppSettings["MongoAdr"], "UseLog");
             var entities = dal.QueryUserLogFrom2(start, end);
             entities.Convert2Csv(filePath);
         }
