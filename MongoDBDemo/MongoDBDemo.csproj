@@ -32,14 +32,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ever2Datable">
-      <HintPath>..\custom_packages\Ever2Datable\Ever2Datable.dll</HintPath>
+    <Reference Include="EPPlus, Version=3.1.3.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.3.1.3.0\lib\net\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.0.86.0.518\lib\net\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>D:\GitProjects\octopus.api\Code\Octopus.API.Services\bin\Debug\MongoDB.Bson.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Driver">
       <HintPath>D:\GitProjects\octopus.api\Code\Octopus.API.Services\bin\Debug\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.2.0.0\lib\net\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Octopus.Utility, Version=7.1.0.8261, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octopus.Utility.7.1.0.8261\lib\net35\Octopus.Utility.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -71,6 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ever2Datable\Ever2Datable.csproj">
+      <Project>{9764da04-b99c-4357-8f5e-464388e80206}</Project>
+      <Name>Ever2Datable</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

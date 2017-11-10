@@ -11,7 +11,7 @@ namespace MongoDBDemo
     {
         static void Main(params string[] agrs)
         {
-            DateTime start = DateTime.Now.AddDays(-4);
+            DateTime start = DateTime.Now.AddDays(-10);
             DateTime end = DateTime.Now;
             if (agrs.Count() > 0)
             {
