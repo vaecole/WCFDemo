@@ -14,6 +14,7 @@ namespace MongoDBDemo.Entities
     {
         public string UserId { get; set; }
         public string TaskId { get; set; }
+        public string TaskName { get; set; }
         public string IP { get; set; }
         public int Port { get; set; }
         public DateTime StartUseTime { get; set; }
@@ -22,7 +23,7 @@ namespace MongoDBDemo.Entities
         public DateTime DistributionTime { get; set; }
         public DateTime ExpirationTime { get; set; }
         public string Source { get; set; }
-
+        public bool IsCharged;
     }
 
 }
