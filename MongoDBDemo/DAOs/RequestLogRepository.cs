@@ -11,7 +11,7 @@ namespace MongoDBDemo.DAOs
 {
     public class RequestLogRepository : StandardMongoDataAccessor<RequestLog>
     {
-        public RequestLogRepository(string dbserver) : base("RequestLog_archive0915", dbserver, "ApiLogs")
+        public RequestLogRepository(string dbserver, string collection) : base(collection, dbserver, "ApiLogs")
         { }
 
         public List<RequestLog> QueryLogFrom2(DateTime startTime, DateTime endTime)
@@ -20,11 +20,10 @@ namespace MongoDBDemo.DAOs
             return GetList(query);
         }
 
-        public List<RequestLog> QueryDataAPILogFrom2(DateTime startTime, DateTime endTime)
+        public List<RequestLog> QueryLogByApiId(string id, int index, int size, out int total)
         {
-            IMongoQuery query = Query<RequestLog>.Where(e => e.CreatedDate >= startTime && e.CreatedDate <= endTime && e.Url.Contains("http://dataapi.bazhuayu.com/api/"));
-            return GetList(query);
+            IMongoQuery query = Query<RequestLog>.Where(e => e.ApiId == id);
+            return GetListPaged(query, size, index, out total);
         }
-
     }
 }
