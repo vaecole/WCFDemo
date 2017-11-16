@@ -11,7 +11,7 @@ namespace MongoDBDemo.TextFileHelper
 {
     public static class CsvHelper
     {
-        public static void Convert2Csv<T>(this IEnumerable<T> entities, string filePath)
+        public static int Convert2Csv<T>(this IEnumerable<T> entities, string filePath)
         {
             var dt = Converter<T>.Convert2(entities);
             StringBuilder sb = new StringBuilder();
@@ -26,7 +26,8 @@ namespace MongoDBDemo.TextFileHelper
                 sb.AppendLine(string.Join(",", fields));
             }
 
-            File.WriteAllText(filePath, sb.ToString());
+            File.AppendAllText(filePath, sb.ToString());
+            return entities.Count();
         }
     }
 }
