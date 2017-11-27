@@ -25,5 +25,11 @@ namespace MongoDBDemo.DAOs
             IMongoQuery query = Query<RequestLog>.Where(e => e.ApiId == id);
             return GetListPaged(query, size, index, out total);
         }
+
+        public List<RequestLog> QueryLogByUserAndApiId(string userId, string id, int index, int size, out int total)
+        {
+            IMongoQuery query = Query<RequestLog>.Where(e => e.UserId.Equals(userId) && e.ApiId == id);
+            return GetListPaged(query, size, index, out total);
+        }
     }
 }

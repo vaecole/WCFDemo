@@ -41,57 +41,64 @@ namespace MongoDBDemo
             {
                 filePath = agrs[2];
             }
-
-            HashSet<string> hs = new HashSet<string>();
-
-            string[] ids = new string[] { "AllData001", "AllData002", "AllData003", "NotExportData001", null };
             var dal = new RequestLogRepository(ConfigurationManager.AppSettings["MongoAdr"], "RequestLog_DataAPI");
-            foreach (var id in ids)
-            {
-                int total = int.MaxValue;
-                int count = 0;
-                int index = 0;
-                int size = 50000;
+            var userUsedAPIs = QueryUserUsedApis(dal);
+            Console.WriteLine("Total dataapi users count " + userUsedAPIs.Count());
+            File.AppendAllLines($"{filePath}_dataapiUser.csv", userUsedAPIs);
 
-                do
-                {
-                    var users = dal.QueryLogByApiId(id, index++, size, out total).Select(log => log.UserId);
-                    count += users.Count();
-                    users = users.Distinct();
-                    foreach (var u in users)
-                    {
-                        hs.Add(u);
-                    }
-                    Console.WriteLine("Data api " + (id ?? "NotExportData000") + " count " + hs.Count);
-                } while (count < total);
-            }
-            Console.WriteLine("Total dataapi users count " + hs.Count);
-            File.AppendAllLines($"{filePath}_dataapiUser.csv", hs);
-
-            hs.Clear();
             dal = new RequestLogRepository(ConfigurationManager.AppSettings["MongoAdr"], "RequestLog_AdvancedAPI");
+            userUsedAPIs = QueryUserUsedApis(dal);
+            Console.WriteLine("Total advancedapi users count " + userUsedAPIs.Count());
+            File.AppendAllLines($"{filePath}_advancedapiUser.csv", userUsedAPIs);
+
+        }
+
+        private static IEnumerable<string> QueryUserUsedApis(RequestLogRepository dal)
+        {
+            Dictionary<string, MyHashSet<string>> userUsedAPIs = new Dictionary<string, MyHashSet<string>>();
+            string[] ids = new string[] { "AllData001", "AllData002", "AllData003", "NotExportData001", null };
             foreach (var id in ids)
             {
                 int total = int.MaxValue;
                 int count = 0;
                 int index = 0;
-                int size = 50000;
+                int size = 30000;
+                Console.Write((id ?? "NotExportData000") + " count " + userUsedAPIs.Count + "\t");
 
                 do
                 {
-                    var users = dal.QueryLogByApiId(id, index++, size, out total).Select(log => log.UserId);
-                    count += users.Count();
-                    users = users.Distinct();
+                    var useLogs = dal.QueryLogByApiId(id, index++, size, out total);
+                    count += useLogs.Count;
+                    var users = useLogs.Select(log => log.UserId).Distinct();
                     foreach (var u in users)
                     {
-                        hs.Add(u);
+                        if (!userUsedAPIs.ContainsKey(u))
+                        {
+                            userUsedAPIs.Add(u, new MyHashSet<string>());
+                        }
                     }
-                    Console.WriteLine("AdvancedAPI api " + (id ?? "NotExportData000") + " count " + hs.Count);
+                    foreach (var ul in useLogs)
+                    {
+                        userUsedAPIs[ul.UserId].Add(id);
+                    }
+                    Console.Write($"{100F * count / total}% {userUsedAPIs.Count}\t");
                 } while (count < total);
+                Console.WriteLine();
             }
-            Console.WriteLine("Total advancedapi users count " + hs.Count);
-            File.AppendAllLines($"{filePath}_advancedapiUser.csv", hs);
+            return userUsedAPIs.Select(uua => uua.Key + "," + uua.Value.ToString());
+        }
 
+        public class MyHashSet<T> : HashSet<T>
+        {
+            public MyHashSet() : base() { }
+            public override string ToString()
+            {
+                if (Count > 0)
+                {
+                    return string.Join(",", this);
+                }
+                return base.ToString();
+            }
         }
     }
 
