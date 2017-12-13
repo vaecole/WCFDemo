@@ -15,6 +15,7 @@ using Octopus.Entity;
 using WCFDemo.Entities;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Collections.Concurrent;
 
 namespace WCFDemo
 {
@@ -22,10 +23,13 @@ namespace WCFDemo
     {
         static void Main(params string[] paras)
         {
-            short hour = 0;
-            short.TryParse("20" ?? string.Empty, out hour);
-            var scheduleOnceTime = new DateTime(DateTime.Now.Ticks - DateTime.Now.Ticks % TimeSpan.TicksPerDay).AddHours(hour);
-            Console.WriteLine(scheduleOnceTime );
+            ConcurrentDictionary<string, int> userIpCheckingList = new ConcurrentDictionary<string, int>();
+            userIpCheckingList.TryAdd("3", 3);
+            userIpCheckingList.TryAdd("2", 2);
+            userIpCheckingList.TryAdd("1", 1);
+            userIpCheckingList.TryAdd("4", 4);
+
+            Console.WriteLine(userIpCheckingList.Count.ToString());
         }
     }
     [DataContract]

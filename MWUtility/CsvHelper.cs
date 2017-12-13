@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MongoDBDemo.TextFileHelper
+namespace MWUtility
 {
     public static class CsvHelper
     {
@@ -29,5 +29,12 @@ namespace MongoDBDemo.TextFileHelper
             File.AppendAllText(filePath, sb.ToString());
             return entities.Count();
         }
+
+        public static int Convert2Csv<T>(this IEnumerable<T> entities)
+        {
+            string filePath = "Csv_" + DateTime.Now.ToString("yyyyMMddHHmmss")+".csv";
+            return Convert2Csv(entities, filePath);
+        }
+
     }
 }
