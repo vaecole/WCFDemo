@@ -1,7 +1,6 @@
 ﻿using System.Configuration;
 using MongoDBDemo.Entities;
 using MongoDBDemo.Query;
-using MongoDBDemo.TextFileHelper;
 using System;
 using System.Linq;
 using MongoDBDemo.DAOs;
