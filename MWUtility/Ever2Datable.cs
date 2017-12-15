@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MWUtility
 {
-    public class Converter<T>
+    public class Ever2Datable<T>
     {
         public static DataTable Convert2(IEnumerable<T> entities)
         {

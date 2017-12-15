@@ -1,23 +1,24 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace ProxyTest.Common
+namespace MWUtility
 {
-    public class Cacher
+    public class WMedis
     {
         private object newCacheLock = new object();
         private Dictionary<string, string> cachesHashList = new Dictionary<string, string>();
         private string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dump.octdb");
-        private int dumpPeriodMS = 30 * 60 * 1000;
+        private int dumpPeriodMS = 1 * 60 * 1000;
         private bool updated = false;
+        private static IFormatter formatter = new BinaryFormatter();
 
-        private Cacher()
+        private WMedis()
         {
             Recover();
             timer = new Timer(
@@ -26,7 +27,7 @@ namespace ProxyTest.Common
                     dumpPeriodMS,
                     Timeout.Infinite);
         }
-        public static Cacher Instance = new Cacher();
+        public static WMedis Instance = new WMedis();
 
         private Timer timer;
 
@@ -36,11 +37,11 @@ namespace ProxyTest.Common
             {
                 if (!cachesHashList.ContainsKey(entityName))
                 {
-                    cachesHashList.Add(entityName, JsonConvert.SerializeObject(entity));
+                    cachesHashList.Add(entityName, SerializeObject(entity));
                 }
                 else
                 {
-                    cachesHashList[entityName] = JsonConvert.SerializeObject(entity);
+                    cachesHashList[entityName] = SerializeObject(entity);
                 }
                 updated = true;
                 if (persistenceNow)
@@ -59,13 +60,13 @@ namespace ProxyTest.Common
             }
         }
 
-        public TResult Peek<TResult>(string entityName)
+        public TResult Peek<TResult>(string entityName) where TResult : class, new()
         {
             if (!cachesHashList.ContainsKey(entityName))
             {
                 return default(TResult);
             }
-            return JsonConvert.DeserializeObject<TResult>(cachesHashList[entityName]);
+            return DeserializeObject<TResult>(cachesHashList[entityName]);
         }
 
         public bool IsUsed(string entityName)
@@ -82,7 +83,7 @@ namespace ProxyTest.Common
                 {
                     dir.Create();
                 }
-                string dumpedString = JsonConvert.SerializeObject(cachesHashList);
+                string dumpedString = SerializeObject(cachesHashList);
                 var bytes = Encoding.UTF8.GetBytes(
                         dumpedString);
                 try
@@ -92,11 +93,11 @@ namespace ProxyTest.Common
                         fs.Write(bytes, 0, bytes.Length);
                     }
                     updated = false;
-                    LogHelper.LogDebug("dumped: " + cachesHashList.Count);
+                    LogHelper.Debug("dumped: " + cachesHashList.Count);
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.LogError(ex);
+                    LogHelper.Error(ex);
                 }
             }
             timer.Change(dumpPeriodMS, Timeout.Infinite);
@@ -113,15 +114,34 @@ namespace ProxyTest.Common
                         byte[] buffer = new byte[fs.Length];
                         fs.Read(buffer, 0, (int)fs.Length);
                         var dumpedString = Encoding.UTF8.GetString(buffer);
-                        cachesHashList = JsonConvert.DeserializeObject<Dictionary<string, string>>(dumpedString);
+                        cachesHashList = DeserializeObject<Dictionary<string, string>>(dumpedString);
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.LogError(ex);
+                LogHelper.Error(ex);
             }
         }
-    }
 
+        // Create a User object and serialize it to a JSON stream.  
+        public static string SerializeObject<T>(T entity)
+        {
+            MemoryStream ms = new MemoryStream();
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+            ser.WriteObject(ms, entity);
+            byte[] json = ms.ToArray();
+            ms.Close();
+            return Encoding.UTF8.GetString(json, 0, json.Length);
+        }
+
+        public static TResult DeserializeObject<TResult>(string json)
+        {
+            MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(TResult));
+            var obj = (TResult)ser.ReadObject(ms);
+            ms.Close();
+            return obj;
+        }
+    }
 }

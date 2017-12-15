@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MWUtility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,7 +48,7 @@ namespace ProxyTest
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.LogError(ex);
+                    LogHelper.Error(ex);
                     ExpirationTime = DateTime.Now;
                 }
             }

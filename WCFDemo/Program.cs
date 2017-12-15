@@ -19,7 +19,7 @@ using System.Collections.Concurrent;
 
 namespace WCFDemo
 {
-    class aaa
+    class Program
     {
         static void Main(params string[] paras)
         {

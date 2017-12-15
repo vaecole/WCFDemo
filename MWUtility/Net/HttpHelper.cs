@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProxyTest.Common
+namespace MWUtility.Net
 {
     public static class HttpClientFactory
     {
@@ -36,12 +36,12 @@ namespace ProxyTest.Common
             });
         }
 
-        public static HttpStatusCode HttpGet(string url, IWebProxy proxy = null)
+        public static HttpStatusCode HttpGet(string url, IWebProxy proxy = null, int timeOutSeconds = 4)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.ContentType = "application/x-www-form-urlencoded";
-            request.Timeout = 4 * 1000;
+            request.Timeout = timeOutSeconds * 1000;
             if (proxy != null)
             {
                 request.Proxy = proxy;
@@ -50,6 +50,25 @@ namespace ProxyTest.Common
             {
                 return response.StatusCode;
             }
+        }
+
+        public static string Get(string url, params object[] urlParams)
+        {
+            try
+            {
+                var httpclient = Create(string.Format(url, urlParams));
+                var result = httpclient.GetAsync(string.Empty).Result;
+                result.EnsureSuccessStatusCode();
+                return result.Content.ReadAsStringAsync().Result;
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var e in ex.InnerExceptions)
+                {
+                    LogHelper.Error(ex.InnerException);
+                }
+            }
+            return string.Empty;
         }
     }
 
