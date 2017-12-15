@@ -83,11 +83,5 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Ever2Datable\Ever2Datable.csproj">
-      <Project>{9764da04-b99c-4357-8f5e-464388e80206}</Project>
-      <Name>Ever2Datable</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

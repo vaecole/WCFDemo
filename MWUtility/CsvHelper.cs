@@ -1,4 +1,4 @@
-﻿using Ever2Datable;
+﻿using MWUtility;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,7 +13,7 @@ namespace MWUtility
     {
         public static int Convert2Csv<T>(this IEnumerable<T> entities, string filePath)
         {
-            var dt = Converter<T>.Convert2(entities);
+            var dt = Ever2Datable<T>.Convert2(entities);
             StringBuilder sb = new StringBuilder();
 
             IEnumerable<string> columnNames = dt.Columns.Cast<DataColumn>().

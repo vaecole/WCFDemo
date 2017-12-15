@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using MWUtility;
+using MWUtility.Net;
+using Newtonsoft.Json;
 using ProxyTest.Common;
 using ProxyTest.Entity;
 using System;
@@ -15,7 +17,7 @@ namespace ProxyTest
         private string cacheKey = "whiteIpList_zhima";
         public ZhimaProxyProvider()
         {
-            whiteIpList_zhima = Cacher.Instance.Peek<List<string>>(cacheKey);
+            whiteIpList_zhima = WMedis.Instance.Peek<List<string>>(cacheKey);
             if (whiteIpList_zhima == null)
             {
                 whiteIpList_zhima = new List<string>();
@@ -60,19 +62,19 @@ namespace ProxyTest
                 {
                     return true;
                 }
-                LogHelper.LogInfo($"AddIp2WhiteList: " + ip);
+                LogHelper.Info($"AddIp2WhiteList: " + ip);
                 var res = JsonConvert.DeserializeObject<ZhimaResultEntity<object>>(Get(GlobalConfigs.ZhimadailiApiWhiteList, ip));
                 if (res.success)
                 {
                     whiteIpList_zhima.Add(ip);
-                    Cacher.Instance.Cache(cacheKey, whiteIpList_zhima,
+                    WMedis.Instance.Cache(cacheKey, whiteIpList_zhima,
                         (whiteIpList_zhima.Count - lastCount_whiteIpList_zhima) > 10);// 每新增10个，立即持久化一次
                     return true;
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.LogError(ex);
+                LogHelper.Error(ex);
             }
             return false;
         }
@@ -100,7 +102,7 @@ namespace ProxyTest
                 else
                 {
                     var entity = JsonConvert.DeserializeObject<ZhimaResultEntity<object>>(result);
-                    LogHelper.LogError(GetType().Name + entity.msg);
+                    LogHelper.Error(GetType().Name + entity.msg);
                     if (entity.msg != null)
                     {
                         EnsureSelfInWhiteList(entity);
@@ -108,13 +110,12 @@ namespace ProxyTest
                     }
                 }
             }
-            catch (Exception ex) { LogHelper.LogError(ex); }
+            catch (Exception ex) { LogHelper.Error(ex); }
             return null;
         }
 
 
         private bool stopMonitorBalance = false;
-        private double balance = -1;
         private Task monitorBalanceTask;
         private void MonitorBalance()
         {
@@ -127,11 +128,11 @@ namespace ProxyTest
                     try
                     {
                         result = Get(GlobalConfigs.ZhimadailiApiBalance);
-                        LogHelper.LogInfo(result);
+                        LogHelper.Info(result);
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.LogError(ex);
+                        LogHelper.Error(ex);
                     }
                     Thread.Sleep(24 * 60 * 60 * 1000); // 一天检查一次
                 }
@@ -183,7 +184,7 @@ namespace ProxyTest
             }
             catch (Exception ex)
             {
-                LogHelper.LogError(ex);
+                LogHelper.Error(ex);
             }
         }
 
@@ -201,7 +202,7 @@ namespace ProxyTest
             {
                 foreach (var e in ex.InnerExceptions)
                 {
-                    LogHelper.LogError(ex.InnerException);
+                    LogHelper.Error(ex.InnerException);
                 }
             }
             return string.Empty;
