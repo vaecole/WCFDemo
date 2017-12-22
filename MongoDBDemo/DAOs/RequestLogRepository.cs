@@ -11,7 +11,7 @@ namespace MongoDBDemo.DAOs
 {
     public class RequestLogRepository : StandardMongoDataAccessor<RequestLog>
     {
-        public RequestLogRepository(string dbserver, string collection) : base(collection, dbserver, "ApiLogs")
+        public RequestLogRepository(string dbserver, string collection) : base(collection, dbserver, "DataApiLogs")
         { }
 
         public List<RequestLog> QueryLogFrom2(DateTime startTime, DateTime endTime)
