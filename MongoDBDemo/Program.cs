@@ -40,22 +40,23 @@ namespace MongoDBDemo
             {
                 filePath = agrs[2];
             }
-            var dal = new RequestLogRepository(ConfigurationManager.AppSettings["MongoAdr"], "RequestLog_DataAPI");
+            var dal = new RequestLogRepository(ConfigurationManager.AppSettings["MongoAdr"], "RequestLog");
             var userUsedAPIs = QueryUserUsedApis(dal);
             Console.WriteLine("Total dataapi users count " + userUsedAPIs.Count());
             File.AppendAllLines($"{filePath}_dataapiUser.csv", userUsedAPIs);
 
-            dal = new RequestLogRepository(ConfigurationManager.AppSettings["MongoAdr"], "RequestLog_AdvancedAPI");
-            userUsedAPIs = QueryUserUsedApis(dal);
-            Console.WriteLine("Total advancedapi users count " + userUsedAPIs.Count());
-            File.AppendAllLines($"{filePath}_advancedapiUser.csv", userUsedAPIs);
+            //dal = new RequestLogRepository(ConfigurationManager.AppSettings["MongoAdr"], "RequestLog_AdvancedAPI");
+            //userUsedAPIs = QueryUserUsedApis(dal);
+            //Console.WriteLine("Total advancedapi users count " + userUsedAPIs.Count());
+            //File.AppendAllLines($"{filePath}_advancedapiUser.csv", userUsedAPIs);
 
         }
 
         private static IEnumerable<string> QueryUserUsedApis(RequestLogRepository dal)
         {
             Dictionary<string, MyHashSet<string>> userUsedAPIs = new Dictionary<string, MyHashSet<string>>();
-            string[] ids = new string[] { "AllData001", "AllData002", "AllData003", "NotExportData001", null };
+            // string[] ids = new string[] { "AllData001", "AllData002", "AllData003", "NotExportData001", null };
+            string[] ids = new string[] { "E001", "E001A", "E001B", "E003" };
             foreach (var id in ids)
             {
                 int total = int.MaxValue;
