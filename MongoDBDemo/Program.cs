@@ -41,7 +41,7 @@ namespace MongoDBDemo
                 filePath = agrs[2];
             }
             var dal = new RequestLogRepository(ConfigurationManager.AppSettings["MongoAdr"], "RequestLog");
-            var userUsedAPIs = QueryUserUsedApis(dal);
+            var userUsedAPIs = QueryUserUsedApis(dal, start, end);
             Console.WriteLine("Total dataapi users count " + userUsedAPIs.Count());
             File.AppendAllLines($"{filePath}_dataapiUser.csv", userUsedAPIs);
 
@@ -52,7 +52,7 @@ namespace MongoDBDemo
 
         }
 
-        private static IEnumerable<string> QueryUserUsedApis(RequestLogRepository dal)
+        private static IEnumerable<string> QueryUserUsedApis(RequestLogRepository dal, DateTime start, DateTime end)
         {
             Dictionary<string, MyHashSet<string>> userUsedAPIs = new Dictionary<string, MyHashSet<string>>();
             // string[] ids = new string[] { "AllData001", "AllData002", "AllData003", "NotExportData001", null };
@@ -67,7 +67,7 @@ namespace MongoDBDemo
 
                 do
                 {
-                    var useLogs = dal.QueryLogByApiId(id, index++, size, out total);
+                    var useLogs = dal.QueryLogByApiId(id, index++, size, out total, start, end);
                     count += useLogs.Count;
                     var users = useLogs.Select(log => log.UserId).Distinct();
                     foreach (var u in users)
