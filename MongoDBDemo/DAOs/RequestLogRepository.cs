@@ -20,9 +20,9 @@ namespace MongoDBDemo.DAOs
             return GetList(query);
         }
 
-        public List<RequestLog> QueryLogByApiId(string id, int index, int size, out int total)
+        public List<RequestLog> QueryLogByApiId(string id, int index, int size, out int total, DateTime startTime, DateTime endTime)
         {
-            IMongoQuery query = Query<RequestLog>.Where(e => e.ApiId == id);
+            IMongoQuery query = Query<RequestLog>.Where(e => e.ApiId == id && e.CreatedDate >= startTime && e.CreatedDate <= endTime);
             return GetListPaged(query, size, index, out total);
         }
 
