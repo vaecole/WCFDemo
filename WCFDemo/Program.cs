@@ -1,21 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.ServiceModel.Web;
-using System.Runtime.Serialization.Formatters;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Web;
-using System.Threading;
-using System.Security.Cryptography;
-using Octopus.Entity;
-using WCFDemo.Entities;
-using System.IO;
-using System.Runtime.Serialization;
 using System.Collections.Concurrent;
+using System.Runtime.Serialization;
 
 namespace WCFDemo
 {
