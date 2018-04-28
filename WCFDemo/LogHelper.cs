@@ -46,6 +46,11 @@ namespace WCFDemo
             Log(v);
         }
 
+        internal static void LogError(Exception ex)
+        {
+            Log(ex.ToString());
+        }
+
         private static string _logPath
         {
             get

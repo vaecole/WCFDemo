@@ -38,6 +38,12 @@ namespace WCFDemo.NetworkUtility
             return Post<TResult>(url, bodyContent, authorization);
         }
 
+        public static string Post(string url, object objToJson, string authorization = null)
+        {
+            var bodyContent = JsonConvert.SerializeObject(objToJson);
+            return RESTfulRequest(url, HttpRequestType.POST, bodyContent, authorization);
+        }
+
         public static TResult Post<TResult>(string url, IEnumerable<KeyValuePair<string, string>> nameValueCollection, string authorization) where TResult : class, new()
         {
             var formParam = BuildFormParamater(nameValueCollection);
