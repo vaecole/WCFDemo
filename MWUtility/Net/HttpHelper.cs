@@ -54,21 +54,14 @@ namespace MWUtility.Net
 
         public static string Get(string url, params object[] urlParams)
         {
-            try
+            var httpclient = Create(string.Format(url, urlParams));
+            var result = httpclient.GetAsync(string.Empty).Result;
+            // result.EnsureSuccessStatusCode();
+            if(!result.IsSuccessStatusCode)
             {
-                var httpclient = Create(string.Format(url, urlParams));
-                var result = httpclient.GetAsync(string.Empty).Result;
-                result.EnsureSuccessStatusCode();
-                return result.Content.ReadAsStringAsync().Result;
+                throw new Exception(result.StatusCode.ToString());
             }
-            catch (AggregateException ex)
-            {
-                foreach (var e in ex.InnerExceptions)
-                {
-                    LogHelper.Error(ex.InnerException);
-                }
-            }
-            return string.Empty;
+            return result.Content.ReadAsStringAsync().Result;
         }
     }
 
