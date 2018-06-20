@@ -16,6 +16,7 @@ using WCFDemo.Entities;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace WCFDemo
 {
@@ -23,114 +24,51 @@ namespace WCFDemo
     {
         static void Main(params string[] paras)
         {
-            ConcurrentDictionary<string, int> userIpCheckingList = new ConcurrentDictionary<string, int>();
-            userIpCheckingList.TryAdd("3", 3);
-            userIpCheckingList.TryAdd("2", 2);
-            userIpCheckingList.TryAdd("1", 1);
-            userIpCheckingList.TryAdd("4", 4);
-
-            Console.WriteLine(userIpCheckingList.Count.ToString());
+            Octopus.Utility.LogHelper.LogDebug("Debug test info.");
+            Octopus.Utility.LogHelper.LogError("Error test info.");
+            Octopus.Utility.LogHelper.LogInfo("Info test info.");
         }
     }
-    [DataContract]
-    public class UserPrize
+
+    internal class Filter
     {
-        /// <summary>
-        /// 获奖记录的ID
-        /// </summary>
-        [DataMember]
-        public int LogID { get; set; }
-        /// <summary>
-        /// 奖品名称
-        /// </summary>
-        [DataMember]
-        public string PrizeName { get; set; }
-        /// <summary>
-        /// 兑换ID
-        /// </summary>
-        [DataMember]
-        public int ExchangeID { get; set; }
-        /// <summary>
-        /// 兑换类型
-        /// </summary>
-        [DataMember]
-        public int ExchangeType { get; set; }
-        /// <summary>
-        /// 中奖日期
-        /// </summary>
-        [DataMember]
-        public DateTime LuckyTime { get; set; }
-        /// <summary>
-        /// 奖品有效期起始日期
-        /// </summary>
-        [DataMember]
-        public DateTime BeginValidDate { get; set; }
-        /// <summary>
-        /// 奖品有效期截止日期
-        /// </summary>
-        [DataMember]
-        public DateTime EndValidDate { get; set; }
-        /// <summary>
-        /// 奖品内容
-        /// </summary>
-        [DataMember]
-        public string PrizeContent { get; set; }
+        private const string FilterFileName = "userfilter.ini";
+        public static string AppStartPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        public static bool IsFilteredUser(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return false;
+            }
+            var filterFileFullPath = Path.Combine(AppStartPath, FilterFileName);
+            if (!File.Exists(filterFileFullPath))
+            {
+                return false;
+            }
+
+            List<string> betaUsers = new List<string>();
+            using (var fr = File.OpenText(filterFileFullPath))
+            {
+                while (fr.Peek() > 0)
+                {
+                    var line = fr.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("//"))
+                    {
+                        if (line == "all_open") // 对所有用户开放
+                        {
+                            return true;
+                        }
+                        if (line == "all_close")// 对所有用户关闭
+                        {
+                            return false;
+                        }
+                        betaUsers.Add(line);
+                    }
+                }
+            }
+            return betaUsers.Exists(user => user.Equals(userId, StringComparison.OrdinalIgnoreCase));
+        }
     }
 
 
-    /// <summary>
-    /// 抽奖奖品基本属性
-    /// </summary>
-    [DataContract]
-    public class Prize
-    {
-        /// <summary>
-        /// 奖品ID，主键自增
-        /// </summary>
-        [DataMember]
-        public int PrizeID { get; set; }
-        /// <summary>
-        /// 奖品索引位置
-        /// </summary>
-        [DataMember]
-        public int PrizeIndex { get; set; }
-        /// <summary>
-        /// 奖品名称
-        /// </summary>
-        [DataMember]
-        public string PrizeName { get; set; }
-        /// <summary>
-        /// 奖品描述
-        /// </summary>
-        [DataMember]
-        public string PrizeDescription { get; set; }
-    }
-
-    /// <summary>
-    /// 用户抽奖日志
-    /// </summary>
-    [DataContract]
-    public class UserPrizeLog
-    {
-        /// <summary>
-        /// 中奖用户昵称
-        /// </summary>
-        [DataMember]
-        public string UserName { get; set; }
-        /// <summary>
-        /// 奖品ID
-        /// </summary>
-        [DataMember]
-        public int PrizeID { get; set; }
-        /// <summary>
-        /// 奖品名称
-        /// </summary>
-        [DataMember]
-        public string PrizeName { get; set; }
-        /// <summary>
-        /// 中奖时间
-        /// </summary>
-        [DataMember]
-        public string LuckyTime { get; set; }
-    }
 }
