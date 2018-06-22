@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using System.IO;
+using System.Configuration;
 
 namespace mw.Image2Url
 {
     class Program
     {
-        const string entityName = "RuleTemplate";
         static void Main(string[] args)
         {
-            Image2Url(entityName);
+            Image2Url("ruleTemplateGroup");
+            Image2Url("ruleTemplate");
         }
 
         private static void Image2Url(string entityName)
@@ -25,7 +26,7 @@ namespace mw.Image2Url
             try
             {
                 //构造数据库连接字符串，使用IP地址，数据库名称，用户名，密码替换XXX
-                string connStr = "server=123.57.16.246;database=CollectionData;user=sa;pwd=skieer@2015;MultipleActiveResultSets=true";
+                string connStr = ConfigurationManager.ConnectionStrings["OctopusSQLServer"].ConnectionString;
                 conn = new SqlConnection(connStr);
                 conn.Open();
 
@@ -43,21 +44,16 @@ namespace mw.Image2Url
                     var id = int.Parse(dr["Id"].ToString());
                     var picBytes = (byte[])dr["Icon"];
                     var url = dr["Image"]?.ToString();
-                    if (string.IsNullOrEmpty(url))
+                    url = D3PictureServiceWrapper.UploadPicture(picBytes, $"bazhuayu/{entityName}/{id}");
+                    var upateSql = $"update {entityName} set Image = '{url}' where Id={id}";
+                    var updateCmd = new SqlCommand(upateSql, conn);
+                    Console.WriteLine(id.ToString() + url);
+                    updateCmd.ExecuteNonQuery();
+                    using (BinaryWriter sw = new BinaryWriter(File.Create(Path.Combine(folderPath, $"{id}.png"))))
                     {
-                        url = D3PictureServiceWrapper.UploadPicture(picBytes);
-                        var upateSql = $"update {entityName} set Image = '{url}' where Id={id}";
-                        var updateCmd = new SqlCommand(upateSql, conn);
-                        updateCmd.ExecuteNonQuery();
-                        using (BinaryWriter sw = new BinaryWriter(File.Create(Path.Combine(folderPath, $"{id}.png"))))
-                        {
-                            sw.Write(picBytes);
-                        }
+                        sw.Write(picBytes);
                     }
-
                 }
-                dr.Read();
-                Console.WriteLine(dr[0].ToString());
             }
             catch (Exception ex)
             {
@@ -77,10 +73,6 @@ namespace mw.Image2Url
                     conn.Close();
                 }
             }
-        }
-        private static void UpdateImageUrl(int id, string url)
-        {
-
         }
     }
 }
