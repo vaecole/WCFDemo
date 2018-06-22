@@ -24,7 +24,7 @@ namespace mw.Image2Url
         {
             get
             {
-                return "http://img.dataduoduo.com/";// "http://10.105.40.118:8080/";
+                return "http://10.105.40.118:8080/";// "http://img.dataduoduo.com/";// "http://10.105.40.118:8080/";
             }
         }
 
@@ -44,9 +44,8 @@ namespace mw.Image2Url
         /// <param name="fileExt">支持png</param>
         /// <param name="disposes">压缩参数，非必需，格式正则：(\d+)[xX](\d+)#([01])，组1表示宽，组2表示高，组3表示是否等比例压缩（0否1是）。如果选择等比例压缩模式，     最终的宽高会根据源图片与目标图片的宽高的比例大的那个进行汇算</param>
         /// <returns></returns>
-        public static string UploadPicture(byte[] imageBytes, string subPath = "bazhuayu/ruleTemplate/", string fileExt = ".png", string disposes = null)
+        public static string UploadPicture(byte[] imageBytes, string subPath, string fileExt = ".png", string disposes = null)
         {
-            return "fakeUrl";
             if (imageBytes?.Length > 0)
             {
                 var request = new RestRequest(D3PictureUploadPath, Method.POST);
