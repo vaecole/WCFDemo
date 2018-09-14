@@ -1,60 +1,91 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization;
-using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Net;
+using System.Threading;
+using System.Text;
+using System.IO;
+using System.Net.Http;
+using RestSharp;
+using System.Threading.Tasks;
 
 namespace WCFDemo
 {
+
+    public class ThreadWork
+    {
+        public static void DoWork()
+        {
+            try
+            {
+                //int count = 0;
+                //for (int i = 0; i < 100000; i++)
+                //{
+                //    count++;
+                //    //Console.WriteLine("Thread - working.");
+                //    Thread.Sleep(100);
+                //}
+
+                while (true)
+                {
+                    Thread.Sleep(100);
+                }
+            }
+            catch (ThreadAbortException e)
+            {
+                Console.WriteLine("Thread - caught ThreadAbortException - resetting.");
+                Console.WriteLine("Exception message: {0}", e.Message);
+                Thread.ResetAbort();
+            }
+            Console.WriteLine("Thread - still alive and working.");
+            Thread.Sleep(1000);
+            Console.WriteLine("Thread - finished working.");
+        }
+    }
+
     class Program
     {
         static void Main(params string[] paras)
         {
-            Octopus.Utility.LogHelper.LogDebug("Debug test info.");
-            Octopus.Utility.LogHelper.LogError("Error test info.");
-            Octopus.Utility.LogHelper.LogInfo("Info test info.");
-        }
-    }
+            // Add the event handler for handling non-UI thread exceptions to the event. 
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-    internal class Filter
-    {
-        private const string FilterFileName = "userfilter.ini";
-        public static string AppStartPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        public static bool IsFilteredUser(string userId)
+            ThreadStart myThreadDelegate = new ThreadStart(ThreadWork.DoWork);
+            Thread myThread = new Thread(myThreadDelegate);
+            myThread.Start();
+            Thread.Sleep(1000);
+            Console.WriteLine("Main - aborting my thread.");
+            myThread.Abort();
+
+            //myThread.Join();
+            Console.Read();
+            return;
+        }
+
+        // Handle the UI exceptions by showing a dialog box, and asking the user whether 
+        // or not they wish to abort execution. 
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(userId))
+            // 过滤线程中止的异常
+            if (e == null || e.ExceptionObject is ThreadAbortException)
             {
-                return false;
-            }
-            var filterFileFullPath = Path.Combine(AppStartPath, FilterFileName);
-            if (!File.Exists(filterFileFullPath))
-            {
-                return false;
+                return;
             }
 
-            List<string> betaUsers = new List<string>();
-            using (var fr = File.OpenText(filterFileFullPath))
+            Exception outException = e.ExceptionObject as Exception;
+            var exception = outException;
+            if (outException?.InnerException != null)
             {
-                while (fr.Peek() > 0)
-                {
-                    var line = fr.ReadLine();
-                    if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("//"))
-                    {
-                        if (line == "all_open") // 对所有用户开放
-                        {
-                            return true;
-                        }
-                        if (line == "all_close")// 对所有用户关闭
-                        {
-                            return false;
-                        }
-                        betaUsers.Add(line);
-                    }
-                }
+                exception = outException?.InnerException;
             }
-            return betaUsers.Exists(user => user.Equals(userId, StringComparison.OrdinalIgnoreCase));
+            if (exception != null)
+            {
+                Console.WriteLine(exception);
+            }
         }
-    }
 
+
+    }
 
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,7 @@ namespace MongoDBDemo.Entities
     /// <summary>
     /// 代理IP使用日志
     /// </summary>
-    [CollectionName("ProxyUseLog")]
-    public class ProxyUseLogEntity : MongoEntity
+    public class ProxyUseLogEntity : BaseModel<ObjectId>
     {
         public string UserId { get; set; }
         public string TaskId { get; set; }

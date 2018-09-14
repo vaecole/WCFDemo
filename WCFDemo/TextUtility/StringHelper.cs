@@ -99,6 +99,90 @@ namespace WCFDemo
             return res;
         }
 
+
+        private static int CompareVersion(string version1, string version2)
+        {
+            if (version1.Equals(version2))
+                return 0;
+
+            if (string.IsNullOrWhiteSpace(version1))
+                return -1;
+            if (string.IsNullOrWhiteSpace(version2))
+                return 1;
+
+            var v1s = version1.Split('.');
+            var v2s = version2.Split('.');
+
+            int v1 = -1, v2 = -1;
+            var length = Math.Min(v1s.Length, v2s.Length);
+            for (int i = 0; i < length; i++) // 长度相等时一定会出结果
+            {
+                if (!int.TryParse(v1s[i], out v1))
+                    return -1;
+
+                if (!int.TryParse(v2s[i], out v2))
+                    return 1;
+
+                if (v1 != v2)
+                {
+                    return v1 > v2 ? 1 : -1;
+                }
+            }
+
+            return v1s.Length > v2s.Length ? 1 : -1; // 长度不等，高位都相等，谁长谁大
+        }
+
+        private static Encoding GetCharSet(string contentType)
+        {
+            if (!string.IsNullOrEmpty(contentType))
+            {
+                char splitter = '=';
+                var kvStrings = contentType.Split(';');
+                foreach (var item in kvStrings)
+                {
+                    if (item.Contains(splitter.ToString()))
+                    {
+                        var kvs = item.Split(splitter);
+                        if (kvs.Length > 1 && kvs[0].Trim().Equals("charset", StringComparison.OrdinalIgnoreCase))
+                        {
+                            try
+                            {
+                                return Encoding.GetEncoding(kvs[1]);
+                            }
+                            catch
+                            {
+                                return null;
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static Encoding GetEncoding(byte[] buffer)
+        {
+            if (buffer.Length > 1)
+            {
+                if (buffer[0] >= 0xEF)
+                {
+                    if (buffer[0] == 0xEF && buffer[1] == 0xBB)
+                    {
+                        return Encoding.UTF8;
+                    }
+                    else if (buffer[0] == 0xFE && buffer[1] == 0xFF)
+                    {
+                        return Encoding.BigEndianUnicode;
+                    }
+                    else if (buffer[0] == 0xFF && buffer[1] == 0xFE)
+                    {
+                        return Encoding.Unicode;
+                    }
+                }
+            }
+            return Encoding.UTF8;
+        }
+
         public static string tmpltPath1 = @"C:\Users\marko\Documents\Visual Studio 2017\Projects\WCFDemo\WCFDemo\bin\Debug\1.txt";
         public static string tmpltPath2 = @"C:\Users\marko\Documents\Visual Studio 2017\Projects\WCFDemo\WCFDemo\bin\Debug\2.txt";
         public static string str = @"1:软件介绍
