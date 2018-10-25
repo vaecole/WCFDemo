@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +11,8 @@ namespace MongoDBDemo
         private string _collectionName;
         private string _databaseServer;
         private string _databaseName;
-        private MongoServer _server;
-        private MongoDatabase _database;
+        private IMongoClient _client;
+        private IMongoDatabase _database;
 
         public StandardMongoDataAccessor(string collectionName, string databaseServer, string databaseName)
         {
@@ -25,103 +24,62 @@ namespace MongoDBDemo
 
         #region IMongoDataAccessor<T> Members
 
-        public void Update(IMongoQuery query, IMongoUpdate update)
+        public void Update(FilterDefinition<T> query, UpdateDefinition<T> update)
         {
-            this.GetOperationWrapper().Update(query, update, UpdateFlags.Multi);
+            this.Collection.UpdateMany(query, update);
         }
 
-        public void Update(IMongoQuery query, IMongoUpdate update, UpdateFlags flag)
+        public bool Exists(FilterDefinition<T> query)
         {
-            this.GetOperationWrapper().Update(query, update, flag);
-        }
-
-        public bool Exists(IMongoQuery query)
-        {
-            return this.GetOperationWrapper().Count(query) != 0;
+            return Collection.CountDocuments(query) != 0;
         }
 
         public T Insert(T document)
         {
-            GetOperationWrapper().Insert<T>(document);
+            Collection.InsertOne(document);
             return document;
         }
 
         public void InsertBatch(List<T> documents)
         {
-            GetOperationWrapper().InsertBatch<T>(documents);
+            Collection.InsertMany(documents);
         }
 
-        public void InsertBatch(List<T> documents, MongoInsertOptions options)
-        {
-            GetOperationWrapper().InsertBatch<T>(documents, options);
-        }
-
-        public T GetSingle(IMongoQuery query, IMongoSortBy sortBy = null)
+        public List<T> GetList(FilterDefinition<T> query, SortDefinition<T> sortBy = null)
         {
             if (sortBy == null)
-            {
-                return GetOperationWrapper().FindOneAs<T>(query);
-            }
+                return Collection.Find(query).ToList();
             else
-            {
-                return GetOperationWrapper().FindAs<T>(query).SetSortOrder(sortBy).SingleOrDefault();
-            }
+                return Collection.Find(query).Sort(sortBy).ToList();
         }
 
-        public List<T> GetList(IMongoQuery query, IMongoSortBy sortBy = null)
+        public List<T> GetListPaged(FilterDefinition<T> query, int pageSize, int pageIndex, out int total)
         {
-            if (sortBy == null)
-                return GetOperationWrapper().FindAs<T>(query).ToList();
-            else
-                return GetOperationWrapper().FindAs<T>(query).SetSortOrder(sortBy).ToList();
+            var list = Collection.Find(query);
+            total = (int)list.CountDocuments();
+            return list.Skip(pageSize * (pageIndex <= 0 ? 0 : pageIndex - 1)).Limit(pageSize).ToList();
         }
 
-        public List<T> GetListPaged(IMongoQuery query, int pageSize, int pageIndex, out int total)
+
+        public void Delete(FilterDefinition<T> query)
         {
-            //IMongoSortBy sort = SortBy<T>.Ascending(x => x._id);
-            MongoCursor<T> list = GetOperationWrapper().FindAs<T>(query);//.SetSortOrder(sort);
-            total = (int)list.Count();
-            List<T> result = list.Skip<T>(pageSize * (pageIndex <= 0 ? 0 : pageIndex - 1)).Take<T>(pageSize).ToList<T>();
-            return result;
-
-        }
-
-        public List<T> GetListPaged(IMongoQuery query, int pageSize, int pageIndex)
-        {
-            //IMongoSortBy sort = SortBy<T>.Ascending(x => x._id);
-            MongoCursor<T> list = GetOperationWrapper().FindAs<T>(query);//.SetSortOrder(sort);
-            List<T> result = list.Skip<T>(pageSize * (pageIndex <= 0 ? 0 : pageIndex - 1)).Take<T>(pageSize).ToList<T>();
-            return result;
-
-        }
-
-        public void Delete(IMongoQuery query)
-        {
-            GetOperationWrapper().Remove(query, RemoveFlags.None);
-        }
-
-        public long DeleteWithResult(IMongoQuery query)
-        {
-            var res = GetOperationWrapper().Remove(query, RemoveFlags.None);
-            return res.DocumentsAffected;
-        }
-
-        public int Count(IMongoQuery query)
-        {
-            return (int)GetOperationWrapper().Count(query);
+            Collection.DeleteMany(query);
         }
 
         #endregion
 
-        protected MongoCollection GetOperationWrapper()
+        protected IMongoCollection<T> Collection
         {
-            try
+            get
             {
-                return _database.GetCollection(_collectionName);
-            }
-            catch (MongoConnectionException ex)
-            {
-                throw new Exception("Can't connect to DataBase", ex);
+                try
+                {
+                    return _database.GetCollection<T>(_collectionName);
+                }
+                catch (MongoConnectionException ex)
+                {
+                    throw new Exception("Can't connect to DataBase", ex);
+                }
             }
         }
 
@@ -129,32 +87,19 @@ namespace MongoDBDemo
         {
             try
             {
-                if (null == _server)
+                if (null == _client)
                 {
                     //创建数据库链接
-                    _server = new MongoClient(_databaseServer).GetServer();
+                    _client = new MongoClient(_databaseServer);
                 }
                 if (null == _database)
                 {
                     //获得数据库cnblogs
-                    _database = _server.GetDatabase(_databaseName);
+                    _database = _client.GetDatabase(_databaseName);
                 }
-                if (!_database.CollectionExists(_collectionName))
+                if (!_database.ListCollectionNames().ToList().Exists(c => c.Equals(_collectionName)))
                 {
                     _database.CreateCollection(_collectionName);
-                    MongoCollection col = _database.GetCollection(_collectionName);
-                    MongoEntity doc = new T();
-                    IMongoIndexKeys key = doc.GetIndexKey();
-                    if (null != key)
-                    {
-                        col.CreateIndex(key);
-                    }
-
-                    IMongoIndexKeys uniqueKey = doc.GetUniqueIndexKey();
-                    if (null != uniqueKey)
-                    {
-                        col.CreateIndex(uniqueKey, IndexOptions.SetUnique(true));
-                    }
                 }
             }
             catch (MongoConnectionException ex)
@@ -177,7 +122,7 @@ namespace MongoDBDemo
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="document"></param>
-        void Update(IMongoQuery query, IMongoUpdate update);
+        void Update(FilterDefinition<T> query, UpdateDefinition<T> update);
 
         /// <summary>
         /// 新增数据
@@ -194,45 +139,32 @@ namespace MongoDBDemo
         void InsertBatch(List<T> documents);
 
         /// <summary>
-        /// 取一条数据
+        /// 取数据列表
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T GetSingle(IMongoQuery query, IMongoSortBy sortBy = null);
+        List<T> GetList(FilterDefinition<T> query, SortDefinition<T> sortBy = null);
 
         /// <summary>
         /// 取数据列表
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        List<T> GetList(IMongoQuery query, IMongoSortBy sortBy = null);
-
-        /// <summary>
-        /// 取数据列表
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        List<T> GetListPaged(IMongoQuery query, int pageSize, int pageIndex, out int total);
+        List<T> GetListPaged(FilterDefinition<T> query, int pageSize, int pageIndex, out int total);
 
         /// <summary>
         /// 删除数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="Document"></param>
-        void Delete(IMongoQuery query);
+        void Delete(FilterDefinition<T> query);
 
         /// <summary>
         /// 删除数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="Document"></param>
-        bool Exists(IMongoQuery query);
-        /// <summary>
-        /// 删除数据并且返回受影响行数
-        /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        long DeleteWithResult(IMongoQuery query);
+        bool Exists(FilterDefinition<T> query);
 
     }
 
@@ -240,16 +172,6 @@ namespace MongoDBDemo
     public abstract class MongoEntity
     {
         public ObjectId _id;
-
-        public virtual IMongoIndexKeys GetIndexKey()
-        {
-            return null;
-        }
-
-        public virtual IMongoIndexKeys GetUniqueIndexKey()
-        {
-            return null;
-        }
     }
 
 

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Runtime.Serialization;
-using System.Collections.Concurrent;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.IO;
 
 namespace WCFDemo
 {
@@ -10,9 +8,7 @@ namespace WCFDemo
     {
         static void Main(params string[] paras)
         {
-            Octopus.Utility.LogHelper.LogDebug("Debug test info.");
-            Octopus.Utility.LogHelper.LogError("Error test info.");
-            Octopus.Utility.LogHelper.LogInfo("Info test info.");
+
         }
     }
 

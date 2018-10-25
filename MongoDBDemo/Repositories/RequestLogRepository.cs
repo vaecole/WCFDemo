@@ -1,5 +1,5 @@
 ﻿using MongoDB.Driver;
-using MongoDB.Driver.Builders;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDBDemo.Entities;
 using System;
 using System.Collections.Generic;
@@ -16,19 +16,19 @@ namespace MongoDBDemo.DAOs
 
         public List<RequestLog> QueryLogFrom2(DateTime startTime, DateTime endTime)
         {
-            IMongoQuery query = Query<RequestLog>.Where(e => e.CreatedDate >= startTime && e.CreatedDate <= endTime);
-            return GetList(query);
+            var filter = Builders<RequestLog>.Filter.Where(e => e.CreatedDate >= startTime && e.CreatedDate <= endTime);
+            return GetList(filter);
         }
 
         public List<RequestLog> QueryLogByApiId(string id, int index, int size, out int total, DateTime startTime, DateTime endTime)
         {
-            IMongoQuery query = Query<RequestLog>.Where(e => e.ApiId == id && e.CreatedDate >= startTime && e.CreatedDate <= endTime);
+            var query = Builders<RequestLog>.Filter.Where(e => e.ApiId == id && e.CreatedDate >= startTime && e.CreatedDate <= endTime);
             return GetListPaged(query, size, index, out total);
         }
 
         public List<RequestLog> QueryLogByUserAndApiId(string userId, string id, int index, int size, out int total)
         {
-            IMongoQuery query = Query<RequestLog>.Where(e => e.UserId.Equals(userId) && e.ApiId == id);
+            var query = Builders<RequestLog>.Filter.Where(e => e.UserId.Equals(userId) && e.ApiId == id);
             return GetListPaged(query, size, index, out total);
         }
     }

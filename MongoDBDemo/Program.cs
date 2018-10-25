@@ -1,11 +1,9 @@
-﻿using System.Configuration;
-using MongoDBDemo.Entities;
-using MongoDBDemo.Query;
+﻿using MongoDBDemo.DAOs;
 using System;
-using System.Linq;
-using MongoDBDemo.DAOs;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
+using System.Linq;
 
 namespace MongoDBDemo
 {
